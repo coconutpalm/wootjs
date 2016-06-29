@@ -4,10 +4,12 @@ lazy val root = project.in(file("."))
   .settings(publish := {}, publishLocal := {})
 
 lazy val commonSettings = Seq(
-  version := "0.1.1",
+  version := "0.1.2",
   organization := "com.dallaway.richard",
   licenses += "Apache-2.0" -> url("http://www.apache.org/licenses/LICENSE-2.0"),
-  scalaVersion := "2.11.7",
+  scalaVersion := "2.11.8",
+  persistLauncher in Compile := true,
+  persistLauncher in Test := false,
   scalacOptions ++= Seq(
     "-deprecation",
     "-encoding", "UTF-8",
@@ -35,7 +37,13 @@ lazy val client = project.in(file("client"))
     name := "woot-client",
     testFrameworks += new TestFramework("scalacheck.ScalaCheckFramework"),
     javaOptions += "-Xmx2048m", // For tests, to avoid "OutOfMemoryError: Metaspace"
-    libraryDependencies += "com.lihaoyi" %%% "upickle" % upickleVersion
+    libraryDependencies ++= Seq(
+      "com.lihaoyi" %%% "upickle" % upickleVersion,
+      "be.doeraene" %%% "scalajs-jquery" % "0.9.0",
+      "org.querki" %%% "jstree-facade" % "0.4",
+      "com.github.karasiq" %%% "scalajs-bootstrap" % "1.0.2",
+      "fr.iscpif" %%% "scaladget" % "0.7.0"
+    )
   ) dependsOn(modelJs)
 
 lazy val http4s = Seq(
@@ -82,7 +90,7 @@ lazy val wootModel = crossProject
     libraryDependencies += "org.scalacheck" %%% "scalacheck" % "1.12.5" % "test"
   )
   .jsSettings(
-    libraryDependencies += "org.scala-js" %%% "scalajs-dom" % "0.8.0"
+    libraryDependencies += "org.scala-js" %%% "scalajs-dom" % "0.9.0"
   )
 
 lazy val modelJvm = wootModel.jvm
